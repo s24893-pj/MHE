@@ -1,33 +1,30 @@
 import random
-from algoritms import full_search
-
-
-def goal_function(subset: list, target: int) -> int:
-    return abs(sum(subset) - target)
-
-
-def random_solution(subset: list) -> list:
-    random_sol = []
-    for _ in subset:
-        random_sol.append(random.choice([True, False]))
-    return random_sol
-
-
-def get_neighbourhood(solution: list) -> list:
-    neighbourhood = []
-    i = random.randint(0, len(solution) - 1)
-    for j, x in enumerate(solution):
-        if j == i:
-            neighbourhood.append(not x)
-        else:
-            neighbourhood.append(x)
-    return neighbourhood
-
+from algoritms import *
 
 subset = [3, 3, 5, 6, 8, 11, 12]
-target = 10
+target = 20
 
-solution = random_solution(subset)
-neighbourhood = get_neighbourhood(solution)
-print(f"sol = {solution}, neighbourhood = {neighbourhood} ")
-print(full_search(goal_function, subset, target))
+
+def solution_converter(solution, subset):
+    converted_solution = []
+    for i in range(len(subset)):
+        if solution[i]:
+            converted_solution.append(subset[i])
+
+    return converted_solution
+
+
+# solution = random_solution(subset)
+# neighbourhood = get_neighbourhood(solution)
+# print(f"sol = {solution}, neighbourhood = {neighbourhood} ")
+# print(full_search(subset, target))
+# genetic = solution_converter(genetic_algorithm(subset, target, 5, two_point_crossover, multi_mutation, 5,
+#                                                0.01, 50), subset)
+#
+# print(f'genetic: {genetic}')
+# # test = [random_solution(subset) for _ in range(150)]
+#
+# # # print(test)
+# #
+# # print(evaluate(test, subset, target))
+# # print(min(evaluate(test, subset, target)))
