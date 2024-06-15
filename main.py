@@ -1,18 +1,25 @@
+import json
 import random
 from algoritms import *
+import argparse
 
-subset = [3, 3, 5, 6, 8, 11, 12]
-target = 20
+with open('problem.json', 'r') as f:
+    data = json.load(f)
 
+subset = data['set']
+target = data['target']
 
-def solution_converter(solution, subset):
-    converted_solution = []
-    for i in range(len(subset)):
-        if solution[i]:
-            converted_solution.append(subset[i])
+parser = argparse.ArgumentParser(description='Projekt na zaliczenie MHE - subset_sum_problem')
+parser.add_argument('Algoritm type', choices=['f_s', 'h_c', 'h_c_r', 'g1', 'g2', 'g3', 'g4'], help='Wybierz algorytm')
+parser.add_argument('--population_size')
+parser.add_argument('--max_gen')
+parser.add_argument('--mutation_probability')
 
-    return converted_solution
-
+population_size
+cross_method
+mutation_method
+max_gen
+mutation_probability
 
 # solution = random_solution(subset)
 # neighbourhood = get_neighbourhood(solution)

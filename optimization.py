@@ -1,4 +1,6 @@
 import random
+
+
 def goal_function(subset: list, target: int) -> int:
     return abs(sum(subset) - target)
 
@@ -10,7 +12,7 @@ def random_solution(subset: list) -> list:
     return random_sol
 
 
-def get_neighbourhood(solution: list) -> list:
+def random_neighbour(solution: list) -> list:
     neighbourhood = []
     i = random.randint(0, len(solution) - 1)
     for j, x in enumerate(solution):
@@ -19,3 +21,33 @@ def get_neighbourhood(solution: list) -> list:
         else:
             neighbourhood.append(x)
     return neighbourhood
+
+
+def get_neighbourhood(solution: list) -> list:
+    neighbourhood = []
+    for i, x in enumerate(solution):
+        neighbour = solution.copy()
+        neighbour[i] = not x
+        neighbourhood.append(neighbour)
+    return neighbourhood
+
+
+def solution_converter(solution, subset):
+    converted_solution = []
+    for i in range(len(subset)):
+        if solution[i]:
+            converted_solution.append(subset[i])
+
+    return converted_solution
+
+
+def best_neighbour(subset: list, neighbourhood: list, target: int) -> list:
+    best_val = float('inf')
+    best_neigh = None
+    for neighbour in neighbourhood:
+        neighbour_value = goal_function(solution_converter(neighbour, subset), target)
+        if neighbour_value < best_val:
+            best_neigh = neighbour
+            best_val = neighbour_value
+
+    return best_neigh

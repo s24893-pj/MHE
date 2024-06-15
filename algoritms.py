@@ -1,13 +1,6 @@
 import random
 from optimization import *
 
-def solution_converter(solution, subset):
-    converted_solution = []
-    for i in range(len(solution)):
-        if solution[i]:
-            converted_solution.append(subset[i])
-
-    return converted_solution
 
 def generate_all_subsets(subset: list) -> list:
     all_subsets = []
@@ -72,13 +65,14 @@ def perfect_result_stop(fit) -> bool:
 def no_improvement_stop(counter: int, max: int) -> bool:
     return counter >= max
 
+
 def evaluate(population, subset, target) -> list:
     return [goal_function(solution_converter(individual, subset), target) for individual in population]
 
-def select_parents(population: list, fit):
-    parents = random.choices(population, weights=[1/f for f in fit], k=2)
-    return parents[0], parents[1]
 
+def select_parents(population: list, fit):
+    parents = random.choices(population, weights=[1 / f for f in fit], k=2)
+    return parents[0], parents[1]
 
 
 def genetic_algorithm(subset, target, population_size, cross_method, mutation_method, max_gen, mutation_probability,
@@ -112,3 +106,38 @@ def genetic_algorithm(subset, target, population_size, cross_method, mutation_me
         population = new_population[:population_size]
 
     return best_sol
+
+
+def hill_climbing(subset, target, iterations):
+    current_sol = random_solution(subset)
+    current_val = goal_function(solution_converter(current_sol, subset), target)
+
+    for _ in range(iterations):
+        neighbourhood = get_neighbourhood(current_sol)
+        new_sol = best_neighbour(subset, neighbourhood, target)
+        new_val = goal_function(new_sol, subset)
+        if  new_val >= current_val:
+            return current_sol
+        else:
+            current_sol = new_sol
+            current_val = goal_function(current_sol, subset)
+
+    return current_sol
+
+def hill_climbing_rng(subset, target, iterations):
+    current_sol = random_solution(subset)
+    current_val = goal_function(solution_converter(current_sol, subset), target)
+
+    for _ in range(iterations):
+        neighbourhood = get_neighbourhood(current_sol)
+        rng_neighbour = random.choice(neighbourhood)
+        neigh_val = goal_function(solution_converter(rng_neighbour, subset), target)
+
+        if neigh_val < current_val:
+            current_sol = rng_neighbour
+            current_val = neigh_val
+
+    return current_sol
+
+
+
