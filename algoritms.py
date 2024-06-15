@@ -115,12 +115,12 @@ def hill_climbing(subset, target, iterations):
     for _ in range(iterations):
         neighbourhood = get_neighbourhood(current_sol)
         new_sol = best_neighbour(subset, neighbourhood, target)
-        new_val = goal_function(new_sol, subset)
+        new_val = goal_function(solution_converter(new_sol, subset), target)
         if  new_val >= current_val:
             return current_sol
         else:
             current_sol = new_sol
-            current_val = goal_function(current_sol, subset)
+            current_val = goal_function(solution_converter(current_sol, subset), target)
 
     return current_sol
 
