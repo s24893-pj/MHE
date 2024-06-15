@@ -10,7 +10,8 @@ subset = data['set']
 target = data['target']
 
 parser = argparse.ArgumentParser(description='Projekt na zaliczenie MHE - subset_sum_problem')
-parser.add_argument('algorithm_type', default='a', choices=['f_s', 'h_c', 'h_c_r', 'g1', 'g2', 'g3', 'g4'],
+parser.add_argument('algorithm_type', default='a', choices=['f_s', 'h_c', 'h_c_r', 'g1', 'g2', 'g3', 'g4',
+                                                            'exp'],
                     help='Wybierz algorytm')
 parser.add_argument('--population_size', type=int, default=10, help='Population size')
 parser.add_argument('--max_gen', type=int, default=20, help='max generation')
