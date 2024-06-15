@@ -1,5 +1,6 @@
 import random
 from optimization import *
+from copy import deepcopy
 
 
 def generate_all_subsets(subset: list) -> list:
@@ -44,17 +45,17 @@ def two_point_crossover(p1, p2):
 
 def simple_mutation(solution: list, mutation_probability=0.01) -> list:
     for i in range(len(solution)):
-        if random.random() < mutation_probability:
-            solution[i] = not solution[i]
+        if random.random() <= mutation_probability:
+            solution[i] = 0
     return solution
 
 
 def multi_mutation(solution: list, mutation_probability=0.01) -> list:
     number = random.randint(1, len(solution))
     indexes = random.sample(range(len(solution)), number)
-    if random.random() < mutation_probability:
+    if random.random() <= mutation_probability:
         for i in indexes:
-            solution[i] = not solution[i]
+            solution[i] = 0
     return solution
 
 
@@ -70,13 +71,22 @@ def evaluate(population, subset, target) -> list:
     return [goal_function(solution_converter(individual, subset), target) for individual in population]
 
 
+# def evaluate1(population, subset, target) -> list:
+#     return [goal_function_for_genetic(solution_converter(individual, subset), target) for individual in population]
+
+
 def select_parents(population: list, fit):
-    parents = random.choices(population, weights=[1 / f for f in fit], k=2)
+    # try:
+    parents = random.choices(population, weights=[1 / (f + 0.01) for f in fit], k=2)
+    # except Exception as e:
+    #     parents = random.choices(population, k=2)
+    # parent1 = random.choices(population, weights=[1 / (f + 0.01) for f in fit])
+    # parent2 = random.choices(population, weights=[1 / (f + 0.01) for f in fit])
     return parents[0], parents[1]
 
 
 def genetic_algorithm(subset, target, population_size, cross_method, mutation_method, max_gen, mutation_probability,
-                      max_without_improvement):
+                      max_without_improvement, stop_crit: str):
     population = [random_solution(subset) for _ in range(population_size)]
     best_sol = None
     best_fit = float('inf')
@@ -92,7 +102,14 @@ def genetic_algorithm(subset, target, population_size, cross_method, mutation_me
         else:
             no_improvement += 1
 
-        if perfect_result_stop(best_fit) or no_improvement_stop(no_improvement, max_without_improvement):
+        # if perfect_result_stop(best_fit) or no_improvement_stop(no_improvement, max_without_improvement):
+        #     break
+        if stop_crit == 'perfect_stop':
+            stop = perfect_result_stop(best_fit)
+        if stop_crit == 'no_improvement':
+            stop = no_improvement_stop(no_improvement, max_without_improvement)
+
+        if stop:
             break
 
         new_population = []
@@ -101,8 +118,8 @@ def genetic_algorithm(subset, target, population_size, cross_method, mutation_me
             c1, c2 = cross_method(p1, p2)
             c1 = mutation_method(c1, mutation_probability)
             c2 = mutation_method(c2, mutation_probability)
-            new_population.extend([c1, c2])
-
+            new_population.append(c1)
+            new_population.append(c2)
         population = new_population[:population_size]
 
     return best_sol
@@ -116,13 +133,14 @@ def hill_climbing(subset, target, iterations):
         neighbourhood = get_neighbourhood(current_sol)
         new_sol = best_neighbour(subset, neighbourhood, target)
         new_val = goal_function(solution_converter(new_sol, subset), target)
-        if  new_val >= current_val:
+        if new_val >= current_val:
             return current_sol
         else:
             current_sol = new_sol
             current_val = goal_function(solution_converter(current_sol, subset), target)
 
     return current_sol
+
 
 def hill_climbing_rng(subset, target, iterations):
     current_sol = random_solution(subset)
@@ -138,6 +156,3 @@ def hill_climbing_rng(subset, target, iterations):
             current_val = neigh_val
 
     return current_sol
-
-
-

@@ -5,6 +5,10 @@ def goal_function(subset: list, target: int) -> int:
     return abs(sum(subset) - target)
 
 
+def goal_function_for_genetic(problem: list, subset: list, target: int) -> int:
+    return sum(problem) - abs(sum(subset) - target)
+
+
 def random_solution(subset: list) -> list:
     random_sol = []
     for _ in subset:
